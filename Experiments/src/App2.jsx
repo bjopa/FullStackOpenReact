@@ -7,11 +7,13 @@ const History = (props) => {
   return <div>button press history: {props.allClicks.join(" ")}</div>;
 };
 
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>{text}</button>
-);
+const Button = (props) => {
+  console.log('props valuie is', props);
+  const { handleClick, text } = props;
+  return <button onClick={handleClick}>{text}</button>;
+};
 
-const App2 = () => {
+const App = () => {
   const [left, setLeft] = useState(0);
   const [right, setRight] = useState(0);
 
@@ -43,4 +45,4 @@ const App2 = () => {
   );
 };
 
-export default App2;
+export default App;

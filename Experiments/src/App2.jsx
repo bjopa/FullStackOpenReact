@@ -8,7 +8,7 @@ const History = (props) => {
 };
 
 const Button = (props) => {
-  console.log('props valuie is', props);
+  console.log('props value is', props);
   const { handleClick, text } = props;
   return <button onClick={handleClick}>{text}</button>;
 };

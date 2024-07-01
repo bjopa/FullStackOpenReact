@@ -13,9 +13,10 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [topIndex, setTopIndex] = useState(0);
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
 
   const onClickNext = () => {
-    console.log(selected);
     const newRandomSelected = getRandomIndex(anecdotes);
     setSelected(newRandomSelected);
   };
@@ -24,12 +25,46 @@ const App = () => {
     return Math.floor(Math.random() * anecdotes.length);
   };
 
+  const onClickVote = () => {
+    const votesCopy = [...votes];
+    votesCopy[selected] += 1;
+    setVotes(votesCopy);
+    console.log("Votes:", votesCopy);
+
+    const maxIndex = getIndexOfMostVotes(votesCopy);
+    setTopIndex(maxIndex);
+  };
+
+  const getIndexOfMostVotes = (votesArray) => {
+    let maxIndex = 0;
+    let maxValue = votesArray[0];
+
+    for (let i = 1; i < votesArray.length; i++) {
+      if (votesArray[i] > maxValue) {
+        maxValue = votesArray[i];
+        maxIndex = i;
+      }
+    }
+
+    if ((maxIndex != topIndex) && (votesArray[maxIndex] > votesArray[topIndex]))
+      return maxIndex;
+
+    return topIndex;
+  };
+
   return (
+    //TODO Make separate components
     <div>
+      <h2>Anecdote of the day</h2>
       {anecdotes[selected]}
+      <div>has {votes[selected]} votes</div>
       <div>
+        <button onClick={onClickVote}>vote</button>{" "}
         <button onClick={onClickNext}>next anecdote</button>
       </div>
+      <h2>Anecdote with most votes</h2>
+      {anecdotes[topIndex]}
+      <div>has {votes[topIndex]} votes</div>
     </div>
   );
 };

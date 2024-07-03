@@ -20,13 +20,12 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
 
-    const isInArray = persons.some(
+    const existingPerson = persons.find(
       (person) => person.name.toLowerCase() === newName.toLowerCase()
     );
-
     const fixedNewName = capitalizeFirstLetter(newName);
 
-    if (!isInArray) {
+    if (!existingPerson) {
       const newPersonObject = {
         name: fixedNewName,
         number: newNumber,
@@ -38,7 +37,20 @@ const App = () => {
         setNewNumber("");
       });
     } else {
-      alert(`${fixedNewName} is already added to phonebook`);
+      if (window.confirm(`update '${fixedNewName}'?`)) {
+        const updatePersonObject = { ...existingPerson, number: newNumber };
+        personService
+          .update(updatePersonObject.id, updatePersonObject)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === returnedPerson.id ? returnedPerson : person
+              )
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      }
     }
   };
 

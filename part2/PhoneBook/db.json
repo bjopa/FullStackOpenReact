@@ -1,0 +1,24 @@
+{
+  "persons": [
+    {
+      "name": "Björn Wange",
+      "number": "0702404509",
+      "id": 1
+    },
+    {
+      "name": "Kalle Anka",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Jürgen Klopp",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Franz Ferdinand",
+      "number": "39-23-6423122",
+      "id": 4
+    }
+  ]
+}

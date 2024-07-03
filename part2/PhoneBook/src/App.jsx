@@ -2,17 +2,20 @@ import { useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import personService from "./services/persons";
+import { useEffect } from "react";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Björn Palm", number: "011-182482", id: 1 },
-    { name: "Kalle Anka", number: "39-44-5323523", id: 2 },
-    { name: "Jürgen Klopp", number: "12-43-234345", id: 3 },
-    { name: "Franz Ferdinand", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState("Palm");
+  const [filter, setFilter] = useState("");
+
+  useEffect(() => {
+    personService.getAll().then((initialpersons) => {
+      setPersons(initialpersons);
+    });
+  }, []);
 
   const addName = (event) => {
     event.preventDefault();
@@ -24,11 +27,26 @@ const App = () => {
     const fixedNewName = capitalizeFirstLetter(newName);
 
     if (!isInArray) {
-      setPersons(persons.concat({ name: fixedNewName, number: newNumber }));
-      setNewName("");
-      setNewNumber("");
+      const newPersonObject = {
+        name: fixedNewName,
+        number: newNumber,
+      };
+
+      personService.create(newPersonObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      });
     } else {
       alert(`${fixedNewName} is already added to phonebook`);
+    }
+  };
+
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete '${name}'?`)) {
+      personService.deletePost(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
     }
   };
 
@@ -72,7 +90,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} deletePerson={deletePerson} />
     </div>
   );
 };

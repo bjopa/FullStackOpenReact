@@ -5,20 +5,20 @@ import Notification from "./components/Notification";
 
 const Footer = () => {
   const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSizze: 16
-  }
+    color: "green",
+    fontStyle: "italic",
+    fontSizze: 16,
+  };
   return (
     <div style={footerStyle}>
       <br />
       <em>Note app, Dep of Comp Science, Uni of Helsinki 2024</em>
     </div>
-  )
-}
+  );
+};
 
 const App = () => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState(null);
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState("some error message ...");
@@ -28,6 +28,10 @@ const App = () => {
       setNotes(initialNotes);
     });
   }, []);
+
+  if (!notes) {
+    return null;
+  }
 
   const addNote = (event) => {
     event.preventDefault();

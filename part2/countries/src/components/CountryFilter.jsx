@@ -1,8 +1,8 @@
-const CountryFilter = ({ filterText, filterCallback }) => {
+const CountryFilter = ({ filterText, handleFilterChange }) => {
   return (
     <form>
       <div>
-        Find Countries <input value={filterText} onChange={filterCallback} />
+        Find Countries <input value={filterText} onChange={handleFilterChange} />
       </div>
     </form>
   );

@@ -34,12 +34,12 @@ function App() {
     <>
       <CountryFilter
         filterText={filterText}
-        filterCallback={handleFilterChange}
+        handleFilterChange={handleFilterChange}
       />
       <Countries
         countries={countries}
         filterText={filterText}
-        filterCallback={handleCountryClick}
+        handleCountryClick={handleCountryClick}
       />
     </>
   );

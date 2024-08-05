@@ -1,9 +1,9 @@
-const Countries = ({ countries, filter }) => {
-  const filteredCountries = countries.filter((country) =>
-    country.name.common.toLowerCase().includes(filter.toLowerCase())
-  );
+import Forecast from "./Forecast";
 
-  console.log("FC", filteredCountries);
+const Countries = ({ countries, filterText, filterCallback }) => {
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(filterText.toLowerCase())
+  );
 
   if (filteredCountries.length > 10) {
     return (
@@ -20,17 +20,18 @@ const Countries = ({ countries, filter }) => {
     return (
       <div>
         <h2>{country.name.common}</h2>
-        <div>Capital {country.capital}</div>
-        <div>Area {country.area}</div>
+        <div>Capital: {country.capital}</div>
+        <div>Area: {country.area}</div>
         <div>
           <h3>Languages:</h3>
           <ul>
-            {languages.map((language, index) => (
-              <li key={index}>{language}</li>
+            {languages.map((language) => (
+              <li key={language}>{language}</li>
             ))}
           </ul>
         </div>
         <img src={country.flags.png} alt={country.flags.alt}></img>
+        <Forecast country={country}/>
       </div>
     );
   }
@@ -39,8 +40,8 @@ const Countries = ({ countries, filter }) => {
     <div>
       {filteredCountries.map((country) => (
         <>
-          <div key={country.name.common}>
-            {country.name.common} {" "} <button>Show</button>
+          <div key={country.name.official}>
+            {country.name.common} {" "} <button onClick={() => filterCallback(country.name.common)}>Show</button>
           </div>
         </>
       ))}

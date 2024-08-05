@@ -1,37 +1,46 @@
 import { useEffect, useState } from "react";
 import countryService from "./services/countries";
 import Countries from "./components/Countries";
+import CountryFilter from "./components/CountryFilter";
 
 function App() {
-const [countries, setCountries] = useState([]);
-const [filter, setFilter] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [filterText, setFilterText] = useState("");
 
+  useEffect(() => {
+    countryService
+      .getAll()
+      .then((initialCountries) => {
+        setCountries(initialCountries);
+      })
+      .catch((error) => {
+        console.log("Error", error);
+      });
+  }, []);
 
-useEffect(() => {
-  countryService.getAll().then((initialCountries) => {
-    setCountries(initialCountries);
-  })
-  .catch((error) => {
-    console.log("Error", error);
-  })
-}, [])
+  if (!countries) {
+    return null;
+  }
 
-if(!countries) {
-  return null;
-}
+  const handleFilterChange = (event) => {
+    setFilterText(event.target.value);
+  };
 
-const handleFilterChange = (event) => {
-  setFilter(event.target.value);
-}
+  const handleCountryClick = (countryName) => {
+    setFilterText(countryName)
+  }
 
   return (
     <>
-      <form>
-        <div>
-          Find Countries <input value={filter} onChange={handleFilterChange} />
-        </div>
-      </form>
-      <Countries countries={countries} filter={filter} />
+      <CountryFilter
+        filterText={filterText}
+        filterCallback={handleFilterChange}
+      />
+      <Countries
+        countries={countries}
+        filterText={filterText}
+        filterCallback={handleCountryClick}
+      />
     </>
   );
 }

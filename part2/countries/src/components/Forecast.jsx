@@ -18,7 +18,7 @@ const Forecast = ({ country }) => {
     return (
       <div>
         <h2>Weather in {country.capital}</h2>
-        <div>Temp: {weather.main.temp} C</div>
+        <div>Temp: {weather.main.temp} &deg;C</div>
         <div>
           <img
             src={`https://openweathermap.org/img/wn/${weatherIcon}@2x.png`}

@@ -8,8 +8,7 @@ const Countries = ({ countries, filterText, filterCallback }) => {
   if (filteredCountries.length > 10) {
     return (
       <div>
-        Too many matches ({filteredCountries.length}). Please specify another
-        filter.
+        Too many matches ({filteredCountries.length}). Please specify another filter.
       </div>
     );
   }
@@ -31,7 +30,7 @@ const Countries = ({ countries, filterText, filterCallback }) => {
           </ul>
         </div>
         <img src={country.flags.png} alt={country.flags.alt}></img>
-        <Forecast country={country}/>
+        <Forecast country={country} />
       </div>
     );
   }
@@ -39,11 +38,12 @@ const Countries = ({ countries, filterText, filterCallback }) => {
   return (
     <div>
       {filteredCountries.map((country) => (
-        <>
-          <div key={country.name.official}>
-            {country.name.common} {" "} <button onClick={() => filterCallback(country.name.common)}>Show</button>
-          </div>
-        </>
+        <div key={country.name.official}>
+          {country.name.common}{" "}
+          <button onClick={() => filterCallback(country.name.common)}>
+            Show
+          </button>
+        </div>
       ))}
     </div>
   );

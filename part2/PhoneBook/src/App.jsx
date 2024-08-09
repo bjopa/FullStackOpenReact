@@ -33,15 +33,27 @@ const App = () => {
         number: newNumber,
       };
 
-      personService.create(newPersonObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNoteAlertMessage(`Added '${newName}'`);
-        setNewName("");
-        setNewNumber("");
-        setTimeout(() => {
-          setNoteAlertMessage(null);
-        }, 5000);
-      });
+      personService
+        .create(newPersonObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNoteAlertMessage(`Added '${newName}'`);
+          setNewName("");
+          setNewNumber("");
+          setTimeout(() => {
+            setNoteAlertMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          if (error.response.data.error) {
+            setNoteAlertMessage(error.response.data.error);
+          } else {
+            setNoteAlertMessage("An unexpected error occurred.");
+          }
+          setTimeout(() => {
+            setNoteAlertMessage(null);
+          }, 5000);
+        });
     } else {
       if (window.confirm(`update '${fixedNewName}'?`)) {
         const updatePersonObject = { ...existingPerson, number: newNumber };
@@ -61,7 +73,14 @@ const App = () => {
             }, 5000);
           })
           .catch((error) => {
-            setNoteAlertMessage(`Information of '${fixedNewName}' has already been removed from server`)
+            if (error.response.data.error) {
+              setNoteAlertMessage(error.response.data.error);
+            } else {
+              setNoteAlertMessage("An unexpected error occurred.");
+            }
+            setTimeout(() => {
+              setNoteAlertMessage(null);
+            }, 5000);
           });
       }
     }

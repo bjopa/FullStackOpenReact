@@ -1,0 +1,15 @@
+GET http://localhost:3003/api/blogs/
+
+###
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+
+{
+    "title": "How to POSTMAN",
+    "author": "Mr Postman",
+    "url": "callingtwice.postman.com",
+    "likes": 2
+}
+
+###
+DELETE http://localhost:3003/api/blogs/66b9f7c23c848dccdb05d772

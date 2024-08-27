@@ -147,7 +147,7 @@ describe("When there is some blogs saved initially", () => {
   });
 });
 
-describe("When there us initially one user in db", () => {
+describe.only("When there us initially one user in db", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
@@ -196,6 +196,52 @@ describe("When there us initially one user in db", () => {
 
     const usersAtEnd = await helper.usersInDb();
     assert(result.body.error.includes("expected `username` to be unique"));
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+  });
+
+  test("creation fails with proper statuscode and message if username is shorter than 3 characters", async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: "un",
+      name: "Superuser Failing",
+      password: "passvoort",
+    };
+
+    const result = await api
+      .post("/api/users/")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await helper.usersInDb();
+    assert(
+      result.body.error.includes("shorter than the minimum allowed length")
+    );
+
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+  });
+
+  test.only("creation fails with proper statuscode and message if password is shorter than 3 characters", async () => {
+    const usersAtStart = await helper.usersInDb();
+
+    const newUser = {
+      username: "username",
+      name: "Superuser Failing",
+      password: "pw",
+    };
+
+    const result = await api
+      .post("/api/users/")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    console.log("RESULTERROR", result.body.error);
+
+    const usersAtEnd = await helper.usersInDb();
+    assert(result.body.error.includes("password does not meet minimum"));
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length);
   });

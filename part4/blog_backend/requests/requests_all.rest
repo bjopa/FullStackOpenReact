@@ -1,15 +1,41 @@
-GET http://localhost:3003/api/blogs/
-
-###
-POST http://localhost:3003/api/blogs/ HTTP/1.1
-content-type: application/json
+### LOGIN
+POST http://localhost:3003/api/login
+Content-Type: application/json
 
 {
-    "title": "How to POSTMAN",
-    "author": "Mr Postman",
-    "url": "callingtwice.postman.com",
-    "likes": 2
+    "username": "root",
+    "password": "passvoort"
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/66b9f7c23c848dccdb05d772
+GET http://localhost:3003/api/blogs/
+
+###
+GET http://localhost:3003/api/users/
+
+### RUN LOGIN FIRST TO GET TOKEN
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2Y2Q5N2IzZjJhM2IzYjBmZGJlMzNjYyIsImlhdCI6MTcyNDc1NDUxMSwiZXhwIjoxNzI0NzU4MTExfQ.NvOmFakDJJ5gm3XYNVb1xpkbqSNdO58_gBhO6_KvlP4
+
+{
+    "title": "How to POSTMAN again",
+    "author": "Mr Postman",
+    "url": "callingtwice.postman.com",
+    "likes": 99,
+    "userId": "66cd9b642ec23a7f010f5ae7"
+}
+
+###
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "USERNAME HERE",
+    "name": "INSERT NAME",
+    "password": "passvoort"
+}
+
+###
+DELETE http://localhost:3003/api/blogs/66cd9c64bc8386f1bed09dfe
+

@@ -3,8 +3,8 @@ POST http://localhost:3003/api/login
 Content-Type: application/json
 
 {
-    "username": "anka",
-    "password": "passvoort"
+    "username": "root",
+    "password": "**PASSWORD GOES HERE**"
 }
 
 ###
@@ -19,7 +19,7 @@ content-type: application/json
 Authorization: Bearer **BEARER GOES HERE**
 
 {
-    "title": "How to POSTMAN",
+    "title": "How to POSTMAN 3",
     "author": "Mr Postman",
     "url": "callingtwice.postman.com",
     "likes": 99
@@ -36,6 +36,6 @@ content-type: application/json
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/66d58522e7d2f2ef70226b28
+DELETE http://localhost:3003/api/blogs/66d5a33ea74679306cef8ece
 Authorization: Bearer **BEARER GOES HERE**
 

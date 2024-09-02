@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { test, after, beforeEach, describe } = require("node:test");
 const Blog = require("../models/blog");
@@ -9,7 +10,7 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 
-describe("When there is some blogs saved initially", () => {
+describe.only("When there is some blogs saved initially", () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
 
@@ -40,10 +41,17 @@ describe("When there is some blogs saved initially", () => {
     });
   });
 
-  describe("Addition of a new blog", () => {
-    test("blog is created successfully", async () => {
+  describe.only("Addition of a new blog", () => {
+    test.only("blog is created successfully with token", async () => {
       const responseBefore = await api.get("/api/blogs");
       const blogCountBeforeAdding = responseBefore.body.length;
+
+      const user = await User.findOne({ username: "root" });
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+      const token = jwt.sign(userForToken, process.env.SECRET);
 
       const newBlog = {
         title: "TestBlog",
@@ -54,6 +62,7 @@ describe("When there is some blogs saved initially", () => {
 
       const addedBlog = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -147,7 +156,7 @@ describe("When there is some blogs saved initially", () => {
   });
 });
 
-describe.only("When there us initially one user in db", () => {
+describe("When there us initially one user in db", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
@@ -223,7 +232,7 @@ describe.only("When there us initially one user in db", () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length);
   });
 
-  test.only("creation fails with proper statuscode and message if password is shorter than 3 characters", async () => {
+  test("creation fails with proper statuscode and message if password is shorter than 3 characters", async () => {
     const usersAtStart = await helper.usersInDb();
 
     const newUser = {

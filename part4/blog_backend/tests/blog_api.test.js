@@ -10,29 +10,55 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 
-describe.only("When there is some blogs saved initially", () => {
+describe("When there is some blogs saved initially", () => {
+  let token;
+
   beforeEach(async () => {
     await Blog.deleteMany({});
+    await User.deleteMany({});
 
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogObjects.map((blog) => blog.save());
-    await Promise.all(promiseArray);
+    const user = new User({
+      username: "root",
+      passwordHash: await bcrypt.hash("sekret", 10),
+    });
+    await user.save();
+
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    };
+    token = jwt.sign(userForToken, process.env.SECRET);
+
+    const blogObjects = helper.initialBlogs.map((blog) => {
+      return new Blog({
+        ...blog,
+        user: user._id,
+      });
+    });
+
+    const blogArray = blogObjects.map((blog) => blog.save());
+    await Promise.all(blogArray);
   });
 
   test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`)
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
 
   test("all blogs are returned", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`);
     assert.strictEqual(response.body.length, helper.initialBlogs.length);
   });
 
   test("blogs unique identifier is ID", async () => {
-    const response = await api.get("/api/blogs");
+    const response = await api
+      .get("/api/blogs")
+      .set("Authorization", `Bearer ${token}`);
     const blogs = response.body;
 
     blogs.forEach((blog) => {
@@ -41,17 +67,12 @@ describe.only("When there is some blogs saved initially", () => {
     });
   });
 
-  describe.only("Addition of a new blog", () => {
-    test.only("blog is created successfully with token", async () => {
-      const responseBefore = await api.get("/api/blogs");
+  describe("Addition of a new blog", () => {
+    test("blog is created successfully with token", async () => {
+      const responseBefore = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
       const blogCountBeforeAdding = responseBefore.body.length;
-
-      const user = await User.findOne({ username: "root" });
-      const userForToken = {
-        username: user.username,
-        id: user._id,
-      };
-      const token = jwt.sign(userForToken, process.env.SECRET);
 
       const newBlog = {
         title: "TestBlog",
@@ -67,7 +88,9 @@ describe.only("When there is some blogs saved initially", () => {
         .expect(201)
         .expect("Content-Type", /application\/json/);
 
-      responseAfter = await api.get("/api/blogs");
+      responseAfter = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
       const blogCountAfterAdding = responseAfter.body.length;
 
       assert.strictEqual(newBlog.title, addedBlog.body.title);
@@ -87,6 +110,7 @@ describe.only("When there is some blogs saved initially", () => {
 
       const addedBlog = await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect("Content-Type", /application\/json/);
@@ -104,6 +128,7 @@ describe.only("When there is some blogs saved initially", () => {
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
         .expect("Content-Type", /application\/json/);
@@ -119,8 +144,24 @@ describe.only("When there is some blogs saved initially", () => {
 
       await api
         .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
+        .expect("Content-Type", /application\/json/);
+    });
+
+    test("blog returns error code 401 if token is missing", async () => {
+      const newBlog = {
+        title: "Test Blog",
+        author: "Author McTest",
+        url: "testurl.com",
+        likes: 99,
+      };
+
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(401)
         .expect("Content-Type", /application\/json/);
     });
   });
@@ -129,12 +170,14 @@ describe.only("When there is some blogs saved initially", () => {
     test("likes is updated successsfully", async () => {
       const putResponse = await api
         .put("/api/blogs/5a422aa71b54a676234d17f8")
+        .set("Authorization", `Bearer ${token}`)
         .send({ likes: 666 })
         .expect(200);
 
-      const responseAfterUpdate = await api.get(
-        "/api/blogs/5a422aa71b54a676234d17f8"
-      );
+      const responseAfterUpdate = await api
+        .get("/api/blogs/5a422aa71b54a676234d17f8")
+        .set("Authorization", `Bearer ${token}`);
+
       const likesAfterUpdate = responseAfterUpdate.body.likes;
 
       assert.strictEqual(putResponse.body.likes, likesAfterUpdate);
@@ -143,12 +186,19 @@ describe.only("When there is some blogs saved initially", () => {
 
   describe("Deleting a specific blog", () => {
     test("blog is deleted successfully", async () => {
-      const responseBefore = await api.get("/api/blogs");
+      const responseBefore = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
       const blogCountBeforeDeleting = responseBefore.body.length;
 
-      await api.delete("/api/blogs/5a422aa71b54a676234d17f8").expect(204);
+      await api
+        .delete("/api/blogs/5a422aa71b54a676234d17f8")
+        .set("Authorization", `Bearer ${token}`)
+        .expect(204);
 
-      const responseAfter = await api.get("/api/blogs");
+      const responseAfter = await api
+        .get("/api/blogs")
+        .set("Authorization", `Bearer ${token}`);
       const blogCountAfterDeleting = responseAfter.body.length;
 
       assert.strictEqual(blogCountBeforeDeleting - 1, blogCountAfterDeleting);
@@ -246,8 +296,6 @@ describe("When there us initially one user in db", () => {
       .send(newUser)
       .expect(400)
       .expect("Content-Type", /application\/json/);
-
-    console.log("RESULTERROR", result.body.error);
 
     const usersAtEnd = await helper.usersInDb();
     assert(result.body.error.includes("password does not meet minimum"));

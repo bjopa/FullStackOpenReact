@@ -4,11 +4,13 @@ Content-Type: application/json
 
 {
     "username": "root",
-    "password": "**PASSWORD GOES HERE**"
+    "password": "passvoort"
 }
 
 ###
 GET http://localhost:3003/api/blogs/
+content-type: application/json
+Authorization: Bearer "**TOKEN**"
 
 ###
 GET http://localhost:3003/api/users/
@@ -16,7 +18,7 @@ GET http://localhost:3003/api/users/
 ### RUN LOGIN FIRST TO GET TOKEN
 POST http://localhost:3003/api/blogs/ HTTP/1.1
 content-type: application/json
-Authorization: Bearer **BEARER GOES HERE**
+Authorization: Bearer "**TOKEN**"
 
 {
     "title": "How to POSTMAN 3",
@@ -36,6 +38,7 @@ content-type: application/json
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/66d5a33ea74679306cef8ece
-Authorization: Bearer **BEARER GOES HERE**
+DELETE http://localhost:3003/api/blogs/66d5a5f09a1f6d006a69c802
+content-type: application/json
+Authorization: Bearer "**TOKEN**"
 

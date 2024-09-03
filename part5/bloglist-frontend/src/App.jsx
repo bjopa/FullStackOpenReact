@@ -9,12 +9,14 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  // Check logged-in user from local storage
+  // Check logged-in user from local storage when page is refreshed
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      blogService.setToken(user.token);
+      blogService.getAll().then((blogs) => setBlogs(blogs));
     }
   }, []);
 
@@ -74,15 +76,21 @@ const App = () => {
 
   const logout = () => (
     <div>
-      <button onClick={handleLogout}>Logout</button>
+      <button style={{ marginLeft: "10px" }} onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 
   const blogForm = () => (
     <div>
       <h2>blogs</h2>
-      <p>{user.name} is logged in </p>
-      {logout()}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {user.name} is logged in {logout()}
+      </div>
+      <br />
+      <br />
+
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}

@@ -1,0 +1,44 @@
+### LOGIN
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "root",
+    "password": "passvoort"
+}
+
+###
+GET http://localhost:3003/api/blogs/
+content-type: application/json
+Authorization: Bearer "**TOKEN**"
+
+###
+GET http://localhost:3003/api/users/
+
+### RUN LOGIN FIRST TO GET TOKEN
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer "**TOKEN**"
+
+{
+    "title": "How to POSTMAN 3",
+    "author": "Mr Postman",
+    "url": "callingtwice.postman.com",
+    "likes": 99
+}
+
+###
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "USERNAME HERE",
+    "name": "INSERT NAME",
+    "password": "passvoort"
+}
+
+###
+DELETE http://localhost:3003/api/blogs/66d5a5f09a1f6d006a69c802
+content-type: application/json
+Authorization: Bearer "**TOKEN**"
+

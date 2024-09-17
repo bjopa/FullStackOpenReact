@@ -86,9 +86,7 @@ const App = () => {
 
   const logout = () => (
     <div>
-      <button style={{ marginLeft: "10px" }} onClick={handleLogout}>
-        Logout
-      </button>
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 

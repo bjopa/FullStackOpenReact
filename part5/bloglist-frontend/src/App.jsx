@@ -1,21 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
+import BlogForm from "./components/BlogForm";
 
 const App = () => {
   const [bannerMessage, setBannerMessage] = useState(null);
   const [bannerType, setBannerType] = useState("info");
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-
+  const blogFormRef = useRef();
   const [blogs, setBlogs] = useState([]);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
 
   // Check logged-in user from local storage when page is refreshed
   useEffect(() => {
@@ -96,14 +94,23 @@ const App = () => {
 
   //BLOGS
 
-  const blogForm = () => (
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility();
+    blogService.create(blogObject).then((returnedBlog) => {
+      setBlogs(blogs.concat(returnedBlog));
+    });
+  };
+
+  const blogSection = () => (
     <div>
       <h2>blogs</h2>
       <div style={{ display: "flex", alignItems: "center" }}>
         {user.name} is logged in {logout()}
       </div>
       <br />
-      {createBlogForm()}
+      <Togglable buttonLabel="create" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
       <br />
 
       {blogs.map((blog) => (
@@ -112,74 +119,12 @@ const App = () => {
     </div>
   );
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const newBlog = {
-      title,
-      author,
-      url,
-    };
-    blogService.create(newBlog).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-      setBannerType("info");
-      setBannerMessage(
-        `A new blog: '${returnedBlog.title}' by ${returnedBlog.author} added`
-      );
-      setTimeout(() => {
-        setBannerMessage(null);
-      }, 5000);
-    });
-  };
-
-  const createBlogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title: </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="author">Author: </label>
-          <input
-            type="text"
-            id="author"
-            name="author"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="url">URL: </label>
-          <input
-            type="text"
-            id="url"
-            name="url"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Create</button>
-      </form>
-    </div>
-  );
+  //RETURN
 
   return (
     <div>
       <Notification message={bannerMessage} type={bannerType} />
-      {user === null ? loginForm() : blogForm()}
+      {user === null ? loginForm() : blogSection()}
     </div>
   );
 };

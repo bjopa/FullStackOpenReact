@@ -25,7 +25,7 @@ const Blog = ({ blog, updateBlogHandler }) => {
         <br />
         {blog.likes} <button onClick={addLike}>like</button>
         <br />
-        {blog.user.name}
+        {blog.user && blog.user.name ? blog.user.name : "Unknown user"}
       </div>
     </div>
   );

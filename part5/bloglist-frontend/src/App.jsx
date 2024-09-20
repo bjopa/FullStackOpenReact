@@ -92,6 +92,41 @@ const App = () => {
 
   //BLOGS
 
+  // const updateBlog = async (blogToUpdate) => {
+  //   console.log("B2U", blogToUpdate);
+  //   try {
+  //     await blogService.update(blogToUpdate).then((returnedBlog) => {
+  //       console.log(returnedBlog);
+  //     });
+  //   } catch (exception) {
+  //     setBannerType("error");
+  //     setBannerMessage("Could not update, read error description in console");
+  //     console.log(exception);
+  //     setTimeout(() => {
+  //       setBannerMessage(null);
+  //     }, 5000);
+  //   }
+  // };
+
+  const updateBlog = async (blogToUpdate) => {
+    try {
+      const updatedBlog = await blogService.update(
+        blogToUpdate.id,
+        blogToUpdate
+      );
+      setBlogs(
+        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+      );
+    } catch (exception) {
+      setBannerType("error");
+      setBannerMessage("Could not update, read error description in console");
+      console.log(exception);
+      setTimeout(() => {
+        setBannerMessage(null);
+      }, 5000);
+    }
+  };
+
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
@@ -112,7 +147,7 @@ const App = () => {
       <br />
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlogHandler={updateBlog} />
       ))}
     </div>
   );

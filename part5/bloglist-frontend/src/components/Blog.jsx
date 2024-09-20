@@ -1,11 +1,19 @@
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogHandler }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => {
     const newStatus = !isExpanded;
     setIsExpanded(newStatus);
+  };
+
+  const addLike = async () => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
+    await updateBlogHandler(updatedBlog);
   };
 
   return (
@@ -15,7 +23,7 @@ const Blog = ({ blog }) => {
       <div style={{ display: isExpanded ? "" : "none" }}>
         {blog.url}
         <br />
-        {blog.likes} <button>like</button>
+        {blog.likes} <button onClick={addLike}>like</button>
         <br />
         {blog.user.name}
       </div>

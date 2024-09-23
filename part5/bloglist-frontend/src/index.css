@@ -7,6 +7,12 @@ button {
   margin-left: 5px;
 }
 
+.removeButton {
+  margin-left: 0px;
+  background-color: blue;
+  color: antiquewhite;
+}
+
 .blogStyle {
   padding: 10px 2px 10px 2px;
   border: solid;

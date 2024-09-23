@@ -111,10 +111,16 @@ const App = () => {
     }
   };
 
+  const deleteBlog = async (blogToDelete) => {
+    await blogService.deleteOne(blogToDelete.id);
+    setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id));
+  };
+
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
+      const blogWithUser = { ...returnedBlog, user: user };
+      setBlogs(blogs.concat(blogWithUser));
     });
   };
 
@@ -133,7 +139,13 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} updateBlogHandler={updateBlog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            updateBlogHandler={updateBlog}
+            deleteBlogHandler={deleteBlog}
+          />
         ))}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Blog = ({ blog, updateBlogHandler }) => {
+const Blog = ({ blog, user, updateBlogHandler, deleteBlogHandler }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => {
@@ -16,6 +16,12 @@ const Blog = ({ blog, updateBlogHandler }) => {
     await updateBlogHandler(updatedBlog);
   };
 
+  const deleteBlog = async () => {
+    console.log("Del User=", user);
+    console.log("Blog User=", blog.user);
+    await deleteBlogHandler(blog);
+  };
+
   return (
     <div className="blogStyle">
       {blog.title} by {blog.author}
@@ -26,6 +32,12 @@ const Blog = ({ blog, updateBlogHandler }) => {
         {blog.likes} <button onClick={addLike}>like</button>
         <br />
         {blog.user && blog.user.name ? blog.user.name : "Unknown user"}
+        <br />
+        {blog.user.username === user.username ? (
+          <button className="removeButton" onClick={deleteBlog}>
+            remove
+          </button>
+        ) : null}
       </div>
     </div>
   );

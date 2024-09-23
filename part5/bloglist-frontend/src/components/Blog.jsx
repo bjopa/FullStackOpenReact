@@ -17,9 +17,9 @@ const Blog = ({ blog, user, updateBlogHandler, deleteBlogHandler }) => {
   };
 
   const deleteBlog = async () => {
-    console.log("Del User=", user);
-    console.log("Blog User=", blog.user);
-    await deleteBlogHandler(blog);
+    if (window.confirm(`Remove blog '${blog.title}' by '${blog.author}'?`)) {
+      await deleteBlogHandler(blog);
+    }
   };
 
   return (

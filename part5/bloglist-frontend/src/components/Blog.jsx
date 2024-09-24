@@ -27,17 +27,23 @@ const Blog = ({ blog, user, updateBlogHandler, deleteBlogHandler }) => {
       {blog.title} by {blog.author}
       <button onClick={toggleExpanded}>{isExpanded ? 'hide' : 'view'}</button>
       <div style={{ display: isExpanded ? '' : 'none' }}>
-        {blog.url}
-        <br />
-        {blog.likes} <button onClick={addLike}>like</button>
-        <br />
-        {blog.user && blog.user.name ? blog.user.name : 'Unknown user'}
-        <br />
-        {blog.user.username === user.username ? (
-          <button className="removeButton" onClick={deleteBlog}>
-            remove
-          </button>
-        ) : null}
+        <div>{blog.url}</div>
+        <div>
+          {blog.likes} <button onClick={addLike}>like</button>
+        </div>
+        <div>
+          {blog.user && blog.user.name ? blog.user.name : 'Unknown user'}
+        </div>
+        <div>
+          {blog.user.username === user.username ? (
+            <button
+              className="removeButton"
+              onClick={deleteBlog}
+            >
+              remove
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   )

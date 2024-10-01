@@ -41,11 +41,10 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      //..
+      await loginWith(page, 'root', 'passvoort')
     })
 
     test('a new blog can be created', async ({ page }) => {
-      await loginWith(page, 'root', 'passvoort')
       await createBlog(page, 'TestTitle', 'Test Author', 'www.test.com')
 
       await expect(page.getByText('TestTitle')).toBeVisible()

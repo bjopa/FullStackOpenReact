@@ -11,7 +11,7 @@ const Blog = ({ blog, user, updateBlogHandler, deleteBlogHandler }) => {
   const addLike = async () => {
     const updatedBlog = {
       ...blog,
-      likes: blog.likes + 1,
+      likes: (blog.likes || 0) + 1,
     }
     await updateBlogHandler(updatedBlog)
   }
@@ -24,14 +24,16 @@ const Blog = ({ blog, user, updateBlogHandler, deleteBlogHandler }) => {
 
   return (
     <div className="blogStyle">
-      {blog.title} by {blog.author}
+      Title: {blog.title} by {blog.author}
       <button onClick={toggleExpanded}>{isExpanded ? 'hide' : 'view'}</button>
       <div style={{ display: isExpanded ? '' : 'none' }}>
-        <div>{blog.url}</div>
+        <div>URL: {blog.url}</div>
         <div>
-          {blog.likes} <button onClick={addLike}>like</button>
+          <span data-testid="likes-count">Likes: {blog.likes || 0}</span>
+          <button onClick={addLike}>like</button>
         </div>
         <div>
+          Author:{' '}
           {blog.user && blog.user.name ? blog.user.name : 'Unknown user'}
         </div>
         <div>

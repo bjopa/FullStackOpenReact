@@ -65,6 +65,7 @@ const App = () => {
       <div>
         username
         <input
+          data-testid="username"
           type="text"
           value={username}
           name="Username"
@@ -74,6 +75,7 @@ const App = () => {
       <div>
         password
         <input
+          data-testid="password"
           type="password"
           value={password}
           name="Password"
@@ -131,7 +133,10 @@ const App = () => {
         {user.name} is logged in {logout()}
       </div>
       <br />
-      <Togglable buttonLabel="create" ref={blogFormRef}>
+      <Togglable
+        buttonLabel="create"
+        ref={blogFormRef}
+      >
         <BlogForm createBlog={addBlog} />
       </Togglable>
       <br />
@@ -154,7 +159,10 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={bannerMessage} type={bannerType} />
+      <Notification
+        message={bannerMessage}
+        type={bannerType}
+      />
       {user === null ? loginForm() : blogSection()}
     </div>
   )

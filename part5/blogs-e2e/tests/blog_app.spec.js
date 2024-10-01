@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'passvoort',
       },
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Second User',
+        username: 'sec',
+        password: 'passvoort',
+      },
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -72,7 +79,6 @@ describe('Blog app', () => {
       await expect(page.getByText('Deleteable Blog')).toBeVisible()
 
       await page.getByRole('button', { name: 'view' }).click()
-
       page.on('dialog', async (dialog) => {
         expect(dialog.type()).toBe('confirm')
         expect(dialog.message()).toBe(
@@ -80,10 +86,31 @@ describe('Blog app', () => {
         )
         await dialog.accept()
       })
-
       await page.getByRole('button', { name: 'remove' }).click()
 
       await expect(page.getByText('Deleteable Blog')).not.toBeVisible()
+    })
+
+    test('only the creator can see the remove button', async ({ page }) => {
+      await createBlog(
+        page,
+        'No remove button',
+        'Test Author One',
+        'www.removemenot.com'
+      )
+
+      await expect(page.getByText('No remove button')).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+
+      await page.getByRole('button', { name: 'Logout' }).click()
+      await loginWith(page, 'sec', 'passvoort')
+
+      await expect(page.getByText('No remove button')).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(
+        page.getByRole('button', { name: 'remove' })
+      ).not.toBeVisible()
     })
   })
 })

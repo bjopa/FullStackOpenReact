@@ -112,5 +112,44 @@ describe('Blog app', () => {
         page.getByRole('button', { name: 'remove' })
       ).not.toBeVisible()
     })
+
+    test('blogs are ordered by likes, most likes first', async ({ page }) => {
+      await createBlog(page, 'First Blog', 'Author 1', 'www.first.com')
+      await createBlog(page, 'Second Blog', 'Author 2', 'www.second.com')
+      await createBlog(page, 'Third Blog', 'Author 3', 'www.third.com')
+
+      const likeBlog = async (blogTitle, likes) => {
+        await page
+          .getByText(blogTitle)
+          .getByRole('button', { name: 'view' })
+          .click()
+
+        for (let i = 0; i < likes; i++) {
+          await page
+            .getByText(blogTitle)
+            .getByRole('button', { name: 'like' })
+            .click()
+        }
+
+        await page
+          .getByText(blogTitle)
+          .getByRole('button', { name: 'hide' })
+          .click()
+      }
+
+      await likeBlog('First Blog', 3)
+      await likeBlog('Second Blog', 5)
+      await likeBlog('Third Blog', 2)
+
+      const blogTitles = await page
+        .locator('.blogStyle')
+        .evaluateAll((blogs) => blogs.map((blog) => blog.textContent))
+
+      console.log('Order of blogs:', blogTitles)
+
+      expect(blogTitles[0]).toContain('Second Blog')
+      expect(blogTitles[1]).toContain('First Blog')
+      expect(blogTitles[2]).toContain('Third Blog')
+    })
   })
 })

@@ -24,4 +24,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-part5/notes-e2e/*
+part5/notes-e2e/
+part6/redux-notes/

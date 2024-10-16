@@ -2,9 +2,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, updateAnecdote } from './services/requests'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import { useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const notificationDispatch = useNotificationDispatch()
+  if (!notificationDispatch) {
+    console.error('APP notificationDispatch is undefined')
+  }
+
   const {
     data: anecdotes,
     error,
@@ -23,6 +29,13 @@ const App = () => {
           anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote
         )
       )
+      notificationDispatch({
+        type: 'SET_NOTIFICATION',
+        payload: `Anecdote '${updatedAnecdote.content}' voted`,
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR_NOTIFICATION' })
+      }, 5000)
     },
   })
 

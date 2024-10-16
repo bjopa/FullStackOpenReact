@@ -27,5 +27,10 @@ dist-ssr
 
 
 # Ignore the folders
+part2/Lessons/
+part3/Lessons/
+part4/Lessons/
+part5/Lessons/
+part5/Lessons Backend/
 part5/notes-e2e/
-
+Experiments/
